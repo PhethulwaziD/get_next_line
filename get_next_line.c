@@ -18,12 +18,12 @@ static int		get_line(const int fd, char **str)
 	char		*buff;
 	char		*tmp;
 
-	buff = (char*)malloc(sizeof(char) * (BUFF_SIZE + 1));
-	if (*str == NULL)
-		*str = ft_strnew(0);
+	buff = ft_strnew(BUFF_SIZE);
 	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
 	{
 		buff[ret] = '\0';
+		if (*str == NULL)
+			*str = ft_strnew(0);
 		tmp = *str;
 		*str = ft_strjoin(*str, buff);
 		free(tmp);
@@ -31,7 +31,7 @@ static int		get_line(const int fd, char **str)
 			break ;
 	}
 	free(buff);
-	if (ret == 0)
+	if (ret == 0 || ret < 0)
 		return (0);
 	return (1);
 }
@@ -51,7 +51,7 @@ int				get_next_line(const int fd, char **line)
 	end = ft_strchr(str[fd], '\n');
 	*line = ft_strsub(str[fd], 0, (ft_strlen(str[fd]) - ft_strlen(end)));
 	hold = str[fd];
-	str[fd] = ft_strsub(end, 1, ft_strlen(end));
+	str[fd] = ft_strsub(end, 1, ft_strlen(end) - 1);
 	free(hold);
 	return (1);
 }
